@@ -13,10 +13,10 @@ import java.io.IOException;
 @ComponentScan("com.github.serezhka.jap2s")
 public class VLCJPlayerConfig {
 
-    @Bean
-    public static VLCJPlayer mirrorDataConsumer() throws IOException {
-        return new VLCJPlayer();
-    }
+//    @Bean
+//    public static VLCJPlayer mirrorDataConsumer() throws IOException {
+//        return new VLCJPlayer();
+//    }
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {

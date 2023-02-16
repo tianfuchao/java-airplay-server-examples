@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.annotation.Bean;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -15,7 +16,7 @@ import javax.annotation.PreDestroy;
 @SpringBootApplication
 public class GstPlayerApp {
 
-    private final AirPlayServer airPlayServer;
+    private AirPlayServer airPlayServer;
 
     @Autowired
     public GstPlayerApp(@Value("${server.name}") String serverName,
@@ -25,9 +26,19 @@ public class GstPlayerApp {
         this.airPlayServer = new AirPlayServer(serverName, airPlayPort, airTunesPort, gstPlayer);
     }
 
+    @Bean
+    public GstPlayer initAriplay(@Value("${server.name}") String serverName,
+                                 @Value("${airplay.port}") int airPlayPort,
+                                 @Value("${airtunes.port}") int airTunesPort) {
+        GstPlayer gstPlayer = new GstPlayer();
+        airPlayServer = new AirPlayServer(serverName, airPlayPort, airTunesPort, gstPlayer);
+        return gstPlayer;
+    }
+
     public static void main(String[] args) {
         new SpringApplicationBuilder(GstPlayerApp.class)
-                .web(WebApplicationType.NONE)
+//                .web(WebApplicationType.NONE)
+                .web(WebApplicationType.SERVLET)
                 .headless(false)
                 .run(args);
     }

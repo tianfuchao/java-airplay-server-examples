@@ -34,7 +34,7 @@ class GstPlayerUtils {
      */
     static void configurePaths() {
         if (Platform.isWindows()) {
-            String gstPath = System.getProperty("gstreamer.path", findWindowsLocation());
+            String gstPath = "D:\\gstreamer\\1.0\\msvc_x86_64\\bin";//System.getProperty("gstreamer.path", findWindowsLocation());
             if (!gstPath.isEmpty()) {
                 String systemPath = System.getenv("PATH");
                 if (systemPath == null || systemPath.trim().isEmpty()) {
