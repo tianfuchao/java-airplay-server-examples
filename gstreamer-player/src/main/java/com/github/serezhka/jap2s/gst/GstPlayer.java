@@ -30,7 +30,7 @@ public class GstPlayer implements AirplayDataConsumer {
     public GstPlayer() {
 //        h264Pipeline = (Pipeline) Gst.parseLaunch("appsrc name=h264-src ! h264parse ! avdec_h264 ! autovideosink sync=false");
 
-        h264Pipeline = (Pipeline) Gst.parseLaunch("appsrc name=h264-src ! queue ! h264parse ! queue ! avdec_h264 ! videoconvert ! videorate ! capsfilter caps=\"video/x-raw, framerate=1/30\" ! videoscale ! jpegenc ! appsink name=sink sync=false async=false");
+        h264Pipeline = (Pipeline) Gst.parseLaunch("appsrc name=h264-src ! queue ! h264parse ! queue ! avdec_h264 ! videoconvert ! videorate ! capsfilter caps=\"video/x-raw, framerate=1/30\" ! videoscale ! jpegenc quality=100 ! appsink name=sink sync=false async=false");
         h264Src = (AppSrc) h264Pipeline.getElementByName("h264-src");
         h264Src.setStreamType(AppSrc.StreamType.STREAM);
         h264Src.setCaps(Caps.fromString("video/x-h264,colorimetry=bt709,stream-format=(string)byte-stream,alignment=(string)au"));
