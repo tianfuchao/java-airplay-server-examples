@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <title>打卡表单</title>
+  <script language="javascript"src="http://www.jb51.net/jslib/jquery/jquery.js"></script>
+
+</head>
+<body>
+  <div id="attendanceForm">
+    <label for="checkTime">打卡时间:</label>
+    <input type="datetime-local" id="checkTime" name="user_check_time" required><br><br>
+    <label for="userID">用户ID:</label>
+    <input type="text" id="userid" name="userid"  list="source" required><br><br>
+    <datalist id="source">
+      <option value="孙叶:66113014746429">
+      <option value="王宇拓:01166521141729177079">
+      </datalist>
+    <input type="hidden" id="device_name" name="device_name" value="东门考勤机">
+    <input type="hidden" id="device_id" name="device_id" value="abc123456">
+    <input type="hidden" id="agent_id" name="agent_id" value="877192448">
+    <!-- fs的 -->
+    <!-- <input type="hidden" id="agent_id" name="agent_id" value="1687832267090">  -->
+    
+
+    <input id="submit" type="submit" onclick="uploadData()" value="提交" >
+  </div>
+
+  <script>
+
+    // var token;
+    // // 获取访问令牌
+    // function getToken() {
+    //   var appKey = "dingtxns35ty5kqj5biq";
+    //   var appSecret = "iaAZhvUw5QgtPBAaNxQUGjw1D5yM4pal8SzzX37GIDkdwiPAkcWqqPTOzEuygRiL";
+    //   var getTokenUrl = "https://oapi.dingtalk.com/gettoken?appkey=" + appKey + "&appsecret=" + appSecret;
+
+
+    //   var request = new XMLHttpRequest();
+    //   request.open("GET", getTokenUrl);
+    //   request.send();
+
+    //   request.onreadystatechange = function() {
+    //     if (request.readyState === XMLHttpRequest.DONE) {
+    //       if (request.status === 200) {
+    //         var response = JSON.parse(request.responseText);
+    //         token = response.access_token;
+    //         // 在这里可以保存获取到的访问令牌，以便后续使用
+    //         console.log("Access Token: ", token);
+    //       } else {
+    //         console.error("Failed to get access token");
+    //       }
+    //     }
+    //   };
+    // }
+    //  // 转换为时间戳
+    //  function convertToTimestamp(datetime) {
+    //   var date = new Date(datetime);
+    //   return date.getTime();
+    // }
+
+    // // 监听表单提交事件
+    // document.getElementById("attendanceForm").addEventListener("submit", function(event) {
+    //   event.preventDefault(); // 阻止表单默认提交行为
+
+    //   var url = "https://oapi.dingtalk.com/topapi/attendance/record/upload?access_token=" +token;
+
+    //   // 获取表单数据
+    //   var form = event.target;
+
+    //   var checkTimeInput = $("#checkTime");
+    //   var userCheckTime = convertToTimestamp(checkTimeInput.value);
+    // //   $("[name='user_check_time']").value = userCheckTime;
+
+    //   var formData = new FormData(form);
+    //   formData.set("user_check_time", userCheckTime);
+
+    //   // 发送POST请求
+    //   var request = new XMLHttpRequest();
+    //   request.open("POST", url);
+    //   request.send(formData);
+
+    //   // 处理请求结果
+    //   request.onreadystatechange = function() {
+    //     if (request.readyState === XMLHttpRequest.DONE) {
+    //         var response = JSON.parse(request.responseText);
+    //       if (request.status === 200&&response.errcode==0) {
+    //         alert("提交成功");
+    //         // 在这里可以根据实际情况进行其他操作
+    //       } else {
+    //         alert("提交失败");
+    //         // 在这里可以根据实际情况进行其他操作
+    //       }
+    //     }
+    //   };
+    // });
+
+    function convertToTimestamp(datetime) {
+        var date = new Date(datetime);
+        return date.getTime();
+      }
+    
+    function uploadData() {
+
+      var userid = $("#userid").val();
+      var time= $("#checkTime").val()
+      if (!userid) {
+        alert("请选择用户")
+        return;
+      }
+
+      if (!time) {
+        alert("请选择时间")
+        return;
+      }
+
+
+      var randomNumber = Math.floor(Math.random() * 51) + 10;
+     var userCheckTime = convertToTimestamp(time+":"+randomNumber);
+
+      var device_name = $("#device_name").val();
+      var device_id = $("#device_id").val();
+      var agent_id = $("#agent_id").val();
+  
+      userid= userid.split(":")[1];
+
+
+      var data = JSON.stringify({
+      "agent_id": agent_id,
+      "device_name": device_name,
+      "device_id": device_id,
+      "user_check_time": userCheckTime,
+      "userid": userid
+    });
+
+
+      $.ajax({
+      type: "POST",
+      url: "https://zd.faw.cn/ding-manage/dingding/attendance/schedule/recordUpload",
+      contentType: "application/json",
+      data: data,
+      dataType: "jsonp",
+      success: function(response) {
+        var response = JSON.parse(response);
+        if (response.data.errcode == 0) {
+          alert("提交成功");
+          // Perform other operations as needed
+        } else {
+          alert("提交失败");
+          // Perform other operations as needed
+        }
+      },
+      error: function() {
+        alert("提交失败");
+        // Perform other operations as needed
+      }
+    });
+
+    };
+  </script>
+</body>
+</html>
